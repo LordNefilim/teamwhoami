@@ -1,0 +1,3 @@
+[submodule "Interface/Python/Modules/Ciphers/EasyGnuPG"]
+	path = Interface/Python/Modules/Ciphers/EasyGnuPG
+	url = https://github.com/DtxdF/EasyGnuPG
