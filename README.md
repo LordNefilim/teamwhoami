@@ -4,7 +4,7 @@
 
 ## ¿Qué pretendemos con este repositorio?
 
-Estamos creando una herramienta para además de tener una buena organización del equipo, tengamos una buena seguridad en los datos que se transmiten
+Estamos creando una herramienta para comunicarnos de forma segura y tener un mayor orden en nuestra organización.
 
 ### Caracteristicas de la herramienta:
 
