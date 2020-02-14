@@ -18,10 +18,14 @@ def execute_action(params):
     if not (params):
         info['response'] = 400
 
+        return(info)
+
     cmd = params.get('cmd')
 
     if not (isinstance(cmd, str)):
         info['response'] = 400
+
+        return(info)
 
     else:
         cmd = cmd.strip()
