@@ -105,7 +105,7 @@ class Handler(SimpleHTTPRequestHandler):
 
         self.wfile.write(dumps(info).encode())
 
-    def log_error(self):
+    def log_error(self, *args):
         # No necesitamos este método
 
         return

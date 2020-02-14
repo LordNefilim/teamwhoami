@@ -20,7 +20,7 @@ def execute_action(params):
 
     cmd = params.get('cmd')
 
-    if (isinstance(cmd, str)):
+    if not (isinstance(cmd, str)):
         info['response'] = 400
 
     else:
@@ -65,6 +65,9 @@ def execute_action(params):
 
                 return(info)
 
+            else:
+                credentials[_] = params.get(_)
+
         # Verificamos los opcionales
 
         # La sintaxis de cada uno es:
@@ -76,7 +79,7 @@ def execute_action(params):
                   ('subkey_type', str),
                   ('subkey_length', int),
                   ('expire_date', str)]:
-            if (params.get(_) != None): # Cómo son opcionales, en caso de no ser definidos, dan igual
+            if (params.get(_[0]) != None): # Cómo son opcionales, en caso de no ser definidos, dan igual
                 try:
                     params[_[0]] = _[1](_[0]) # Convertimos el dato a un tipo de dato correspondiente
 
@@ -121,7 +124,7 @@ def execute_action(params):
 
         }
 
-        info['response'] = result
+        info['content'] = result
 
     elif (cmd == 'encrypt'):
         # Me fatal incluir algunos parámetros, cómo "output" y "armor", pero
