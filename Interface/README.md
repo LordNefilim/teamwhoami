@@ -18,11 +18,13 @@ openssl req -x509 -newkey rsa:<Tamaño en Bit's de la clave> -keyout <Nombre de 
 openssl rsa -in <Nombre de la clave usada en la generación> -out <Nombre de la clave nueva> # Podemos colocar las mismas para sobreescribirlas
 ```
 
+*Nota: El tamaño en bit's de la clave tiene que ser mayor o igual a 2048*
+
 Una vez creado la clave y el certificado, pasemos con la utilización de la API
 
 ```python
 import requests
-
+import json
 from urllib3 import disable_warnings
 
 disable_warnings() # Deshabiliamos las advertencias cuando sea una conexión con un certificado inválido.

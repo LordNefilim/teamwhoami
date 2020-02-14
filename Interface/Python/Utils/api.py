@@ -63,7 +63,7 @@ def execute_action(params):
             if not (isinstance(params.get(_), str)):
                 info['response'] = 400
 
-                break
+                return(info)
 
         # Verificamos los opcionales
 
@@ -84,7 +84,7 @@ def execute_action(params):
                     #print("Except:", str(Except))
                     info['response'] = 406
 
-                    break
+                    return(info)
 
                 else:
                     credentials[_[0]] = params.get(_[0]) # Ajustamos el nuevo valor
@@ -96,7 +96,7 @@ def execute_action(params):
                 if not (params.get(_) in api_config.algo_available):
                     info['response'] = 404
                     
-                    break
+                    return(info)
 
         # Verificamos que la longitud de las claves no se sobrepase, evitando
         # una sobrecarga en el servidor
@@ -105,9 +105,13 @@ def execute_action(params):
             if (params.get('key_length') > api_config.key_limit):
                 info['response'] = 413
 
+                return(info)
+
         if (params.get('subkey_length') != None):
             if (params.get('subkey_length') > api_config.sign_limit):
                 info['response'] = 413
+
+                return(info)
         
         gen = GnuPG.gen_key(gpg, **credentials)
 
@@ -118,6 +122,39 @@ def execute_action(params):
         }
 
         info['response'] = result
+
+    elif (cmd == 'encrypt'):
+        # Me fatal incluir algunos parámetros, cómo "output" y "armor", pero
+        # los dejaré cómo estén por defecto para evitar problemas.
+
+        data = {
+                'data' : params.get('data'),
+                'recipients' : params.get('id'),
+                'passphrase' : params.get('passphrase'),
+                'sign' : bool(params.get('sign')),
+                'always_trust' : bool(params.get('always_trust')),
+                'symmetric' : bool(params.get('symmetric')),
+                'armor' : True,
+                'output' : None
+
+        }
+
+        if not (isinstance(data.get('data'), str)) \
+        or not (isinstance(data.get('id'), str)) \
+        or not (isinstance(data.get('passphrase'), str)):
+            info['response'] = 400
+
+            return(info)
+
+        result = GnuPG.encrypt(gpg, **data)
+
+        info['content'] = {
+            'data' : result.data,
+            'ok' : result.ok,
+            'status' : result.status,
+            'stderr' : result.stderr
+
+        }
 
     else:
         info['response'] = 404

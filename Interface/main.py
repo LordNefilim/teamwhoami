@@ -43,6 +43,10 @@ host_config = conf_parser.get_host_config(parsed)
 
 sec_config = conf_parser.get_security_config(parsed)
 
+# Por defecto es mejor que sea https
+
+proto = 'https'
+
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         # Cambiamos al directorio raíz
@@ -116,14 +120,21 @@ class Handler(SimpleHTTPRequestHandler):
 
 httpd = ThreadingHTTPServer((host_config.LHOST, host_config.LPORT),
                             Handler)
-httpd.socket = ssl.wrap_socket(httpd.socket,
-                               keyfile=sec_config.key,
-                               certfile=sec_config.cert,
-                               server_side=True)
+try:
+    httpd.socket = ssl.wrap_socket(httpd.socket,
+                                   keyfile=sec_config.key,
+                                   certfile=sec_config.cert,
+                                   server_side=True)
+
+except Exception as Except:
+    log_system.stderr('NO se usará la clave o el certificado debido a un posible error: {}'.format(Except))
+
+    proto = 'http' # Indicamos al usuario que ya no se usará https
 
 try:
-    log_system.stdout('Escuchando en https://%s:%d' % (host_config.LHOST,
-                                                       host_config.LPORT))
+    log_system.stdout('Escuchando en %s://%s:%d' % (proto,
+                                                    host_config.LHOST,
+                                                    host_config.LPORT))
 
     httpd.serve_forever()
 
