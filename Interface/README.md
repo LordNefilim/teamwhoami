@@ -39,7 +39,7 @@ result = requests.post('https://localhost:8044/',
 				'name_real':'Josef Naranjo'}),
 			verify=False)
 
-print(result) # También podemos usar el método **«.json( )»** para parsear la respuesta.
+print(result.content) # También podemos usar el método '.json( )' para parsear la respuesta.
 
 # Listar todas las claves que tengamos
 
@@ -49,7 +49,7 @@ result = requests.post('https://localhost:8044/',
 				'id':'all'}),
 			verify=False)
 
-print(result)
+print(result.content)
 
 ```
 
