@@ -131,3 +131,7 @@ dmypy.json
 # Vim
 *.sw*
 session.vim
+
+# Misc
+cert
+key

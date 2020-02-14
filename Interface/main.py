@@ -44,7 +44,30 @@ host_config = conf_parser.get_host_config(parsed)
 sec_config = conf_parser.get_security_config(parsed)
 
 class Handler(SimpleHTTPRequestHandler):
+    def __init__(self, *args, **kwargs):
+        # Cambiamos al directorio raíz
+
+        super().__init__(*args,
+                        directory=config.Config.index_project,
+                        **kwargs) 
+
+    def handle(self):
+        # Imitamos el snippet de HTTPServer pero evitando las excepciones
+
+        self.close_connection = True
+
+        try:
+            self.handle_one_request()
+
+            while not (self.close_connection):
+                self.handle_one_request()
+
+        except Exception as Except:
+            log_system.stderr('Exception: {}'.format(Except))
+
     def send_code(self, code):
+        # Con este código ahorramos mucho...
+
         self.send_response(code)
         self.send_header('Content-Type', 'text/html')
         self.end_headers()
@@ -74,9 +97,22 @@ class Handler(SimpleHTTPRequestHandler):
 
         info = api.execute_action(loads(post_data.decode()))
 
-        self.send_code(200) # o info['response']
+        self.send_code(info['response'])
 
         self.wfile.write(dumps(info).encode())
+
+    def log_error(self):
+        # No necesitamos este método
+
+        return
+
+    def log_message(self, *args):
+        args = args[1:]
+
+        method = args[0]
+        status_code = args[1]
+
+        log_system.stdout("{}: {}".format(method, status_code))
 
 httpd = ThreadingHTTPServer((host_config.LHOST, host_config.LPORT),
                             Handler)
