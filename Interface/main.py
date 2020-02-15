@@ -48,13 +48,6 @@ sec_config = conf_parser.get_security_config(parsed)
 proto = 'https'
 
 class Handler(SimpleHTTPRequestHandler):
-    def __init__(self, *args, **kwargs):
-        # Cambiamos al directorio raíz
-
-        super().__init__(*args,
-                        directory=config.Config.index_project,
-                        **kwargs) 
-
     def handle(self):
         # Imitamos el snippet de HTTPServer pero evitando las excepciones
 
@@ -75,6 +68,25 @@ class Handler(SimpleHTTPRequestHandler):
         self.send_response(code)
         self.send_header('Content-Type', 'text/html')
         self.end_headers()
+
+    # Los siguiente métodos HTTP ya no estaran disponibles
+
+    def do_GET(self):
+        self.send_code(501)
+
+    def do_HEAD(self):
+        self.send_code(501)
+
+    def do_OPTIONS(self):
+        self.send_code(501)
+
+    def do_DELETE(self):
+        self.send_code(501)
+
+    def do_PUT(self):
+        self.send_code(501)
+
+    # POST sí por que es parte de la API
 
     def do_POST(self):
         content_length = self.headers['Content-Length']
