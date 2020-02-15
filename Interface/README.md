@@ -65,12 +65,26 @@ with open("encrypt.txt", "rb") as _obj: # En caso de que tenga un archivo en el 
 	result = requests.post('https://localhost:8044/',
 				data=json.dumps({'cmd':'decrypt',
 					'data':_obj.read().decode('ascii'),
-					'passphrase':'dtxdf123@'}))
+					'passphrase':'dtxdf123@'}),
+				verify=False)
 
 pprint.pprint(result.json(), indent=8)
 
 ```
 
 *(Por ahora eso es todo, pero se irán introduciendo más comandos)...*
+
+## Códigos de estado
+
+Los códigos de estado a pesar de que se transmitan por HTTP, no necesariamente cumple el estandar en sí
+
+ Código | Significado
+ --- | ---
+ 400 | El usuario hizo una petición incorrecta. Ya sea porque no envió los datos en el formato correcto o le falto colocar algún parámetro requerido
+ 404 | El comando o un dato solicitado no existe
+ 413 | La longitud de un dato es muy grande. Por ejemplo el tamaño en bit's del par de claves
+ 406 | El servidor no es capaz de procesar la solicitud por error producido por el cliente. Por ejemplo un tipo de dato inválido
+
+***Nota: Todo código que no aparezca acá es porque sigue el estandar HTTP***
 
 \~ DtxdF
