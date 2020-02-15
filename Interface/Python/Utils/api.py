@@ -131,7 +131,7 @@ def execute_action(params):
         info['content'] = result
 
     elif (cmd == 'encrypt'):
-        # Me fatal incluir algunos parámetros, cómo "output" y "armor", pero
+        # Me faltan incluir algunos parámetros, cómo "output" y "armor", pero
         # los dejaré cómo estén por defecto para evitar problemas.
 
         data = {
@@ -146,9 +146,8 @@ def execute_action(params):
 
         }
 
-        if not (isinstance(data.get('data'), str)) \
-        or not (isinstance(data.get('id'), str)) \
-        or not (isinstance(data.get('passphrase'), str)):
+        if not (isinstance(params.get('data'), str)) \
+        or not (isinstance(params.get('id'), str)):
             info['response'] = 400
 
             return(info)
@@ -156,7 +155,31 @@ def execute_action(params):
         result = GnuPG.encrypt(gpg, **data)
 
         info['content'] = {
-            'data' : result.data,
+            'data' : result.data.decode('ascii').strip(),
+            'ok' : result.ok,
+            'status' : result.status,
+            'stderr' : result.stderr
+
+        }
+
+    elif (cmd == 'decrypt'):
+        data = {
+            'message' : params.get('data'),
+            'always_trust' : bool(params.get('always_trust')),
+            'passphrase' : params.get('passphrase')
+
+        }
+
+        if not (isinstance(params.get('data'), str)) \
+        or not (isinstance(params.get('passphrase'), str)):
+            info['response'] = 400
+
+            return(info)
+
+        result = GnuPG.decrypt(gpg, **data)
+
+        info['content'] = {
+            'data' : result.data.decode('ascii').strip(),
             'ok' : result.ok,
             'status' : result.status,
             'stderr' : result.stderr
